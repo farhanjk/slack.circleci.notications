@@ -1,0 +1,59 @@
+version: 2.1
+
+executors:
+  android-executor:
+    docker:
+      - image: circleci/android:api-29
+    environment:
+      - JAVA_OPTIONS: "-Xmx3072m -XX:+HeapDumpOnOutOfMemoryError"
+
+aliases:
+  - &assemble
+    run:
+      name: Download Dependencies
+      command: ./gradlew assembleDebug
+  - &unit_tests
+    run:
+      name: App Unit Tests
+      command: ./gradlew :app:testDebugUnitTest
+
+slack-aliases:
+  - &slack_channel_webhook
+      ${CIRCLE_SLACK_WEBHOOK}
+  - &notify_slack_for_build_completion
+    slack/notify:
+      color: '#1CBF43'
+      message: |
+        [${CIRCLE_USERNAME}] :tada: Build job has completed!
+        https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}
+
+        ${CI_PULL_REQUEST}
+      webhook: *slack_channel_webhook
+
+jobs:
+
+  build:
+    executor: android-executor
+    steps:
+      - checkout
+      - *assemble
+      - *unit_tests
+
+  slack-build-complete:
+    executor: android-executor
+    steps:
+      - *notify_slack_for_build_completion
+
+orbs:
+  slack: circleci/slack@3.3.0
+
+workflows:
+  version: 2.1
+
+  build-workflow:
+    jobs:
+      - build
+
+      - slack-build-complete:
+          requires:
+            - build
