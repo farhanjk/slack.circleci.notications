@@ -1,0 +1,19 @@
+# Gradle
+.gradle
+/.gradletasknamecache
+/local.properties
+
+# Android Studio
+*.iml
+/.idea
+!/.idea/codeStyles/Project.xml
+
+# Other files
+app/libs/
+.DS_Store
+/build
+/app/build/
+/data/build/
+/domain/build/
+/captures
+.externalNativeBuild
