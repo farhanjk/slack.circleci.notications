@@ -7,6 +7,13 @@ executors:
     environment:
       - JAVA_OPTIONS: "-Xmx3072m -XX:+HeapDumpOnOutOfMemoryError"
 
+  general-executor:
+    docker:
+      - environment:
+          TERM: dumb
+        image: 'cibuilds/base:latest'
+    resource_class: small
+
 aliases:
   - &assemble
     run:
