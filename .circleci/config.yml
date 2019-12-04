@@ -10,11 +10,11 @@ executors:
 aliases:
   - &assemble
     run:
-      name: Download Dependencies
-      command: ./gradlew assembleDebug
+      name: Assemble Project
+      command: ./gradlew assembleDebug1
   - &unit_tests
     run:
-      name: App Unit Tests
+      name: Run Unit Tests
       command: ./gradlew :app:testDebugUnitTest
 
 jobs:
