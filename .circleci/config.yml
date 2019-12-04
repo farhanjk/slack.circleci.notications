@@ -22,6 +22,17 @@ aliases:
       name: Deploy Release Artifact
       command: echo "Deploy release for distribution"
 
+slack-aliases:
+  - &slack_channel_webhook
+      ${CIRCLE_SLACK_WEBHOOK}
+  - &notify_slack_for_approval
+    slack/notify:
+      color: '#400080'
+      message: |
+        [${CIRCLE_USERNAME}] Please check and approve Jobs to manually deploy the releases.
+        https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}
+      webhook: *slack_channel_webhook
+
 jobs:
 
   build:
@@ -30,6 +41,11 @@ jobs:
       - checkout
       - *assemble
       - *unit_tests
+
+  slack-approval-link:
+    executor: general-executor
+    steps:
+      - *notify_slack_for_approval
 
   deploy:
     executor: android-executor
@@ -44,6 +60,10 @@ workflows:
   build-workflow:
     jobs:
       - build
+
+      - slack-approval-link:
+          requires:
+            - build
 
       - pending-deployment:
           type: approval
