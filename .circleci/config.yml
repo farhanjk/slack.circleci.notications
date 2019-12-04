@@ -11,7 +11,7 @@ aliases:
   - &assemble
     run:
       name: Assemble Project
-      command: ./gradlew assembleDebug1
+      command: ./gradlew assembleDebug
   - &unit_tests
     run:
       name: Run Unit Tests
