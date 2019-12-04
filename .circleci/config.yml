@@ -16,6 +16,11 @@ aliases:
     run:
       name: Run Unit Tests
       command: ./gradlew :app:testDebugUnitTest
+  #  Placeholder deployment task
+  - &deploy_apk
+    run:
+      name: Deploy Release Artifact
+      command: echo "Deploy release for distribution"
 
 jobs:
 
@@ -26,9 +31,25 @@ jobs:
       - *assemble
       - *unit_tests
 
+  deploy:
+    executor: android-executor
+    steps:
+      - checkout
+      - *assemble
+      - *deploy_apk
+
 workflows:
   version: 2.1
 
   build-workflow:
     jobs:
       - build
+
+      - pending-deployment:
+          type: approval
+          requires:
+            - build
+
+      - deploy:
+          requires:
+            - pending-deployment
